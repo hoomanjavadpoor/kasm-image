@@ -1,7 +1,7 @@
 {
   "friendly_name": "OpenAI Codex CLI",
   "description": "OpenAI Codex CLI coding assistant in a terminal workspace, with GitHub CLI pre-installed. Requires OPENAI_API_KEY at runtime.",
-  "image_src": "https://cdn.simpleicons.org/openai/10A37F",
+  "image_src": "https://zonalogo.com/assets/codex-logo.webp?w=768",
   "architecture": ["amd64"],
   "compatibility": [
     {

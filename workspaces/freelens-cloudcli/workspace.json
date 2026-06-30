@@ -1,7 +1,7 @@
 {
   "friendly_name": "FreeLens + Cloud CLIs",
   "description": "FreeLens (open-source Kubernetes IDE) with kubectl, Helm, Azure CLI, AWS CLI, Google Cloud CLI, and GitHub CLI. Single-app workspace, always up to date via rolling-daily builds.",
-  "image_src": "https://raw.githubusercontent.com/freelensapp/freelens/main/packages/icon/icon.png",
+  "image_src": "https://raw.githubusercontent.com/freelensapp/freelens/efe5985860dea43be40db74edea9408e2f4900b6/packages/ui-components/icon/assets/logo-lens.svg",
   "architecture": ["amd64"],
   "compatibility": [
     {
