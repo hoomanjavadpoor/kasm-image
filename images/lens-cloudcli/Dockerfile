@@ -26,6 +26,11 @@ COPY shared/scripts/install_cloudclis.sh $INST_SCRIPTS/shared/install_cloudclis.
 RUN bash "$INST_SCRIPTS/shared/install_cloudclis.sh" \
     && rm -rf "$INST_SCRIPTS/shared/"
 
+## Default browser (Firefox) – needed for OAuth / login flows
+COPY shared/scripts/install_browser.sh $INST_SCRIPTS/shared/install_browser.sh
+RUN bash "$INST_SCRIPTS/shared/install_browser.sh" \
+    && rm -rf "$INST_SCRIPTS/shared/"
+
 ## Lens Desktop + kubectl + helm
 COPY images/lens-cloudcli/src/install_lens.sh $INST_SCRIPTS/lens/install_lens.sh
 RUN bash "$INST_SCRIPTS/lens/install_lens.sh" \

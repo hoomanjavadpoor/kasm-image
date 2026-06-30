@@ -26,7 +26,12 @@ COPY shared/scripts/install_cloudclis.sh $INST_SCRIPTS/shared/install_cloudclis.
 RUN bash "$INST_SCRIPTS/shared/install_cloudclis.sh" \
     && rm -rf "$INST_SCRIPTS/shared/"
 
-## Warp Terminal
+## Default browser (Firefox) – needed for OAuth / cloud CLI login flows
+COPY shared/scripts/install_browser.sh $INST_SCRIPTS/shared/install_browser.sh
+RUN bash "$INST_SCRIPTS/shared/install_browser.sh" \
+    && rm -rf "$INST_SCRIPTS/shared/"
+
+## Cloud CLIs terminal (xfce4-terminal replaces discontinued Warp Linux)
 COPY images/warp-cloudcli/src/install_warp.sh $INST_SCRIPTS/warp/install_warp.sh
 RUN bash "$INST_SCRIPTS/warp/install_warp.sh" \
     && rm -rf "$INST_SCRIPTS/warp/"

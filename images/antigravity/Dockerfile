@@ -26,6 +26,11 @@ COPY shared/scripts/install_gh.sh $INST_SCRIPTS/shared/install_gh.sh
 RUN bash "$INST_SCRIPTS/shared/install_gh.sh" \
     && rm -rf "$INST_SCRIPTS/shared/"
 
+## Default browser (Firefox) – needed for OAuth / login flows
+COPY shared/scripts/install_browser.sh $INST_SCRIPTS/shared/install_browser.sh
+RUN bash "$INST_SCRIPTS/shared/install_browser.sh" \
+    && rm -rf "$INST_SCRIPTS/shared/"
+
 ## antigravity (Python environment)
 COPY images/antigravity/src/install_antigravity.sh $INST_SCRIPTS/antigravity/install_antigravity.sh
 RUN bash "$INST_SCRIPTS/antigravity/install_antigravity.sh" \
