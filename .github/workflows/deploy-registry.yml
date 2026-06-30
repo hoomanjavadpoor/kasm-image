@@ -124,6 +124,9 @@ jobs:
           # of whether it appends 'list.json' or '1.1/list.json' to the URL.
           cp /tmp/kasm-template/public/list.json _site/list.json
 
+          # versions.txt — Kasm fetches this first to discover available schema versions
+          printf '1.0\n1.1\n' > _site/versions.txt
+
           # Root index.html — redirect visitors to the versioned path
           cat > _site/index.html << 'HTML'
           <!DOCTYPE html>
