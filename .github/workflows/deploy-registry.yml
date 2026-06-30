@@ -44,6 +44,50 @@ jobs:
           rm -rf /tmp/kasm-template/workspaces/chromium
           cp -r workspaces/. /tmp/kasm-template/workspaces/
 
+      - name: Download workspace icons
+        # Kasm builds icon URLs as {registry}/1.1/icons/{image_src}.
+        # Absolute CDN URLs in image_src produce broken paths.
+        # Download each icon locally and update image_src to the filename.
+        run: |
+          python3 << 'PYEOF'
+          import json, os, urllib.request
+          from pathlib import Path
+
+          ws_root = Path('/tmp/kasm-template/workspaces')
+          for ws_dir in sorted(ws_root.iterdir()):
+              if not ws_dir.is_dir():
+                  continue
+              js_path = ws_dir / 'workspace.json'
+              if not js_path.exists():
+                  continue
+              ws = json.loads(js_path.read_text())
+              src = ws.get('image_src', '')
+              if not src.startswith('http'):
+                  continue  # already a local filename
+
+              # Derive extension from content-type; fall back from URL
+              ext = '.png'
+              for e in ['.svg', '.webp', '.jpg', '.jpeg', '.png']:
+                  if src.split('?')[0].lower().endswith(e):
+                      ext = e
+                      break
+              try:
+                  req = urllib.request.Request(src, headers={'User-Agent': 'Mozilla/5.0'})
+                  with urllib.request.urlopen(req, timeout=30) as resp:
+                      ct = resp.headers.get('Content-Type', '')
+                      if 'svg' in ct:   ext = '.svg'
+                      elif 'webp' in ct: ext = '.webp'
+                      elif 'jpeg' in ct or 'jpg' in ct: ext = '.jpg'
+                      elif 'png' in ct:  ext = '.png'
+                      icon_name = ws_dir.name + ext
+                      (ws_dir / icon_name).write_bytes(resp.read())
+                  ws['image_src'] = icon_name
+                  js_path.write_text(json.dumps(ws, indent=2))
+                  print(f'[OK] {ws_dir.name}: saved {icon_name}')
+              except Exception as e:
+                  print(f'[WARN] {ws_dir.name}: could not download icon ({e}), keeping URL')
+          PYEOF
+
       - name: Configure registry (next.config.js)
         run: |
           cat > /tmp/kasm-template/site/next.config.js << 'NEXTEOF'
