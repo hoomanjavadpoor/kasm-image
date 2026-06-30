@@ -1,94 +1,75 @@
 # kasm-image
 
-Six custom [Kasm Workspaces](https://kasmweb.com/) single-app images, built daily and published to the GitHub Container Registry.
+Seven ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, rebuilt daily and published to the GitHub Container Registry. Add them to any Kasm deployment in seconds via the built-in registry.
 
-## Images
+## Available workspaces
 
-| Image | Tools | GHCR tag |
-|-------|-------|----------|
-| `lens-cloudcli` | Lens Desktop + kubectl + helm + az + aws + gcp + gh | `ghcr.io/<owner>/kasm-lens-cloudcli:rolling-daily` |
-| `codex` | OpenAI Codex CLI + gh | `ghcr.io/<owner>/kasm-codex:rolling-daily` |
-| `antigravity` | Python 3 + antigravity + gh | `ghcr.io/<owner>/kasm-antigravity:rolling-daily` |
-| `claude-code` | Anthropic Claude Code CLI + gh | `ghcr.io/<owner>/kasm-claude-code:rolling-daily` |
-| `warp-cloudcli` | Warp Terminal + az + aws + gcp + gh | `ghcr.io/<owner>/kasm-warp-cloudcli:rolling-daily` |
-| `anydesk` | AnyDesk | `ghcr.io/<owner>/kasm-anydesk:rolling-daily` |
+| Workspace | What's inside |
+|-----------|---------------|
+| **Lens + Cloud CLIs** | Lens Desktop Kubernetes IDE · kubectl · Helm · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI |
+| **FreeLens + Cloud CLIs** | FreeLens (open-source K8s IDE) · kubectl · Helm · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI |
+| **OpenAI Codex CLI** | Codex CLI in xterm · GitHub CLI |
+| **Google Antigravity** | Google Antigravity Hub desktop app |
+| **Claude Desktop** | Anthropic Claude Desktop GUI app |
+| **Warp + Cloud CLIs** | Warp Terminal · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI · kubectl |
+| **AnyDesk** | AnyDesk remote desktop client |
 
-Replace `<owner>` with your GitHub username or organisation name.
+> Every image ships with **Go** (latest stable) and **Python 3** with pip/venv.
 
-## Repository layout
+All images are tagged `rolling-daily` and rebuilt every night at 02:00 UTC from `kasmweb/core-ubuntu-jammy:1.19.0-rolling-daily`.
 
-```
-.
-├── shared/scripts/
-│   ├── install_cloudclis.sh   # az + aws + gcp + gh (reused by lens & warp images)
-│   └── install_gh.sh          # gh only
-├── images/
-│   ├── lens-cloudcli/
-│   │   ├── Dockerfile
-│   │   └── src/
-│   │       ├── install_lens.sh
-│   │       └── custom_startup.sh
-│   ├── codex/
-│   ├── antigravity/
-│   ├── claude-code/
-│   ├── warp-cloudcli/
-│   └── anydesk/
-└── .github/workflows/
-    └── build-images.yml       # daily matrix build → ghcr.io
-```
+---
 
-Each Dockerfile uses `.` (repo root) as its build context so that shared scripts can be `COPY`-ed into any image.
+## Option 1 — Kasm Registry (recommended)
 
-## CI/CD
+Add the entire collection to Kasm in one step.
 
-The workflow `.github/workflows/build-images.yml` runs:
-- **On schedule** – every day at `02:00 UTC`
-- **On `workflow_dispatch`** – manual trigger from the Actions tab
+1. In the Kasm admin UI go to **Admin → Registries → Add Registry**.
+2. Set the registry URL to:
+   ```
+   https://hoomanjavadpoor.github.io/kasm-image/
+   ```
+3. Click **Save**. All seven workspaces will appear under **Workspaces → Add Workspace → From Registry**.
 
-It builds all six images in parallel (matrix strategy), pulls the latest `kasmweb/core-ubuntu-jammy:1.19.0-rolling-daily` base on every run, and publishes two tags per image:
-- `rolling-daily` – always points to the latest daily build
-- `latest`
+> GitHub Pages must be enabled in the repo for this URL to work (it is by default on public repos).
 
-GitHub Actions layer caching (`cache-from/cache-to: type=gha`) is scoped per image, so unchanged layers are reused across daily builds.
+---
 
-### Required permissions
+## Option 2 — Add a single image manually
 
-The workflow uses `GITHUB_TOKEN` (auto-provided by Actions) to push to GHCR. Ensure the repository **Packages** write permission is granted under _Settings → Actions → General → Workflow permissions_.
+1. Go to **Admin → Workspaces → Add Workspace**.
+2. Set **Workspace Type** to `Container`.
+3. Paste the GHCR image tag:
 
-## Building locally
+   | Workspace | Docker image |
+   |-----------|-------------|
+   | Lens + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-lens-cloudcli:rolling-daily` |
+   | FreeLens + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-freelens-cloudcli:rolling-daily` |
+   | OpenAI Codex CLI | `ghcr.io/hoomanjavadpoor/kasm-codex:rolling-daily` |
+   | Google Antigravity | `ghcr.io/hoomanjavadpoor/kasm-antigravity:rolling-daily` |
+   | Claude Desktop | `ghcr.io/hoomanjavadpoor/kasm-claude-code:rolling-daily` |
+   | Warp + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-warp-cloudcli:rolling-daily` |
+   | AnyDesk | `ghcr.io/hoomanjavadpoor/kasm-anydesk:rolling-daily` |
 
-All Dockerfiles expect the **repo root** as the build context:
+4. Leave all other settings at their defaults and click **Save**.
 
-```bash
-# Example: build the codex image
-docker build -t kasm-codex:dev -f images/codex/Dockerfile .
-
-# Example: build the lens image
-docker build -t kasm-lens-cloudcli:dev -f images/lens-cloudcli/Dockerfile .
-```
-
-## Registering in Kasm Workspaces
-
-After pushing an image, add it as a workspace in the Kasm admin UI:
-
-1. **Workspaces → Add Workspace**
-2. Set **Docker Image** to the full GHCR tag (e.g. `ghcr.io/<owner>/kasm-codex:rolling-daily`).
-3. Set **Workspace Type** to `Container`.
-4. If the registry is private, supply a Docker Registry Username/Password (use a GitHub PAT with `read:packages` scope).
-5. Save and launch.
+---
 
 ## Notes
 
-### Warp Terminal (`warp-cloudcli`)
-Warp Terminal requires GPU/hardware-accelerated rendering. In some Kasm deployments without GPU passthrough it may fall back to software rendering or fail to start. If you encounter display issues, set the `APP_ARGS` environment variable in the Kasm workspace to `--disable-gpu` as a workaround.
-
-### API keys for Codex and Claude Code
-Both images open an `xterm` terminal. The CLI tools require API keys at runtime — they are **not** baked into the image:
-
+### Codex — API key
+The Codex workspace opens an xterm terminal. Set your OpenAI API key inside the session before running `codex`:
 ```bash
-# Inside the session terminal
-export OPENAI_API_KEY="sk-..."       # for codex
-export ANTHROPIC_API_KEY="sk-ant-..." # for claude-code
+export OPENAI_API_KEY="sk-..."
+```
+Use Kasm [Workspace Environment Variables](https://www.kasmweb.com/docs/latest/how_to/persistent_data.html) or a launch form to inject it automatically.
+
+### Warp Terminal — GPU rendering
+Warp uses GPU-accelerated rendering. If the session fails to start or shows a blank window, add `--disable-gpu` to the **Docker Run Config Override → Environment** in the workspace settings:
+```
+APP_ARGS=--disable-gpu
 ```
 
-Use Kasm [Workspace Launch Forms](https://docs.kasm.com/docs/1.19.0/how-to/workspaces-sessions/container-workspace/workspace-launch-form) or persistent profiles to inject credentials securely.
+### GHCR visibility
+All images are published as **public** packages on GHCR. No authentication is needed to pull them.
+

@@ -1,35 +1,29 @@
 #!/usr/bin/env bash
-# Install Node.js LTS, Anthropic Claude Code CLI, and xterm
+# Install Claude Desktop (Anthropic)
 set -ex
 
 export DEBIAN_FRONTEND=noninteractive
 
+# ── Dependencies for Electron-based desktop app ────────────────
 apt-get update
-apt-get install -y --no-install-recommends curl ca-certificates xterm
+apt-get install -y --no-install-recommends \
+    curl ca-certificates \
+    libgtk-3-0 \
+    libnotify4 \
+    libnss3 \
+    libxss1 \
+    libasound2 \
+    libxtst6 \
+    libgbm1 \
+    libsecret-1-0 \
+    xdg-utils
 
-# ── Node.js LTS ────────────────────────────────────────────────
-curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
-apt-get install -y nodejs
-
-# ── Claude Code CLI ────────────────────────────────────────────
-npm install -g @anthropic-ai/claude-code
-
-# ── Shell profile: welcome banner ─────────────────────────────
-cat >> /etc/bash.bashrc <<'BASHRC'
-
-# ── Claude Code workspace ──────────────────────────────────────
-if [ -t 1 ]; then
-  echo ""
-  printf '\033[1;33m  ╔══════════════════════════════════════════╗\n'
-  printf '\033[1;33m  ║    \033[1;37mAnthropic Claude Code Workspace\033[1;33m     ║\n'
-  printf '\033[1;33m  ╠══════════════════════════════════════════╣\n'
-  printf '\033[1;33m  ║  \033[0;37mRun:\033[0m  claude                          \033[1;33m║\n'
-  printf '\033[1;33m  ║  \033[0;37mAuth:\033[0m export ANTHROPIC_API_KEY=sk-...  \033[1;33m║\n'
-  printf '\033[1;33m  ║  \033[0;37mGH:\033[0m   gh auth login                  \033[1;33m║\n'
-  printf '\033[1;33m  ╚══════════════════════════════════════════╝\n'
-  printf '\033[0m\n'
-fi
-BASHRC
+# ── Download and install Claude Desktop ────────────────────────
+# Always fetches the latest release via the official redirect
+curl -fsSL \
+    "https://claude.ai/api/claude-for-desktop/download?platform=linux_deb" \
+    -o /tmp/claude-desktop.deb
+apt-get install -y /tmp/claude-desktop.deb
 
 # ── Cleanup ────────────────────────────────────────────────────
 apt-get clean

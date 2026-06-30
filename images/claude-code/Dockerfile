@@ -23,7 +23,7 @@ COPY shared/scripts/install_gh.sh $INST_SCRIPTS/shared/install_gh.sh
 RUN bash "$INST_SCRIPTS/shared/install_gh.sh" \
     && rm -rf "$INST_SCRIPTS/shared/"
 
-## Claude Code CLI
+## Claude Desktop
 COPY images/claude-code/src/install_claude_code.sh $INST_SCRIPTS/claude/install_claude_code.sh
 RUN bash "$INST_SCRIPTS/claude/install_claude_code.sh" \
     && rm -rf "$INST_SCRIPTS/claude/"
