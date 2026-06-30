@@ -1,42 +1,33 @@
 #!/usr/bin/env bash
-# Install Warp Terminal
+# Install xfce4-terminal + cloud CLIs (replaces Warp Terminal which no longer
+# distributes a Linux build as of mid-2026).
 set -ex
 
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
-apt-get install -y --no-install-recommends \
-    curl ca-certificates gnupg apt-transport-https
+apt-get install -y --no-install-recommends xfce4-terminal
 
-# ── Warp Terminal (official apt repo) ─────────────────────────
-curl -fsSL https://releases.warp.dev/linux/keys/warp.asc \
-    | gpg --dearmor -o /usr/share/keyrings/warp-archive-keyring.gpg
-chmod go+r /usr/share/keyrings/warp-archive-keyring.gpg
+# ── Shell profile: welcome banner ─────────────────────────────
+cat >> /etc/bash.bashrc <<'BASHRC'
 
-echo "deb [arch=amd64 signed-by=/usr/share/keyrings/warp-archive-keyring.gpg] https://releases.warp.dev/linux/deb stable main" \
-    > /etc/apt/sources.list.d/warp.list
-
-apt-get update
-apt-get install -y warp-terminal
-
-# Fallback: if apt install fails, download the .deb directly
-if ! command -v warp-terminal &>/dev/null; then
-    echo "apt install failed, falling back to direct .deb download"
-    curl -fsSL "https://app.warp.dev/download?package=deb" \
-        -L -o /tmp/warp.deb
-    apt-get install -y /tmp/warp.deb
-    rm /tmp/warp.deb
+# ── Cloud CLIs Terminal workspace ─────────────────────────────
+if [ -t 1 ]; then
+  echo ""
+  printf '\033[1;32m  ╔══════════════════════════════════════════╗\n'
+  printf '\033[1;32m  ║      \033[1;37mCloud CLIs Terminal Workspace\033[1;32m    ║\n'
+  printf '\033[1;32m  ╠══════════════════════════════════════════╣\n'
+  printf '\033[1;32m  ║  \033[0;37maz\033[0m      Azure CLI                      \033[1;32m║\n'
+  printf '\033[1;32m  ║  \033[0;37maws\033[0m     AWS CLI                        \033[1;32m║\n'
+  printf '\033[1;32m  ║  \033[0;37mgcloud\033[0m  Google Cloud CLI                \033[1;32m║\n'
+  printf '\033[1;32m  ║  \033[0;37mgh\033[0m      GitHub CLI                     \033[1;32m║\n'
+  printf '\033[1;32m  ║  \033[0;37mkubectl\033[0m Kubernetes CLI                 \033[1;32m║\n'
+  printf '\033[1;32m  ╚══════════════════════════════════════════╝\n'
+  printf '\033[0m\n'
 fi
-
-# Create a desktop shortcut
-DESKTOP_FILE=$(find /usr/share/applications -iname "warp*.desktop" 2>/dev/null | head -1 || true)
-if [ -n "$DESKTOP_FILE" ]; then
-    cp "$DESKTOP_FILE" "$HOME/Desktop/"
-    chmod +x "$HOME/Desktop/$(basename "$DESKTOP_FILE")"
-fi
+BASHRC
 
 # ── Cleanup ────────────────────────────────────────────────────
 apt-get clean
 rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
-find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \; 2>/dev/null || true
 chown -R 1000:0 "$HOME"

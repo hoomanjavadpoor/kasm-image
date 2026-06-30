@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
-# Kasm custom_startup.sh – Warp Terminal + cloud CLIs single-app workspace
+# Kasm custom_startup.sh – Cloud CLIs Terminal (xfce4-terminal)
 set -ex
 
-PGREP="warp-terminal"
+PGREP="xfce4-terminal"
 export MAXIMIZE="true"
-export MAXIMIZE_NAME="Warp"
+export MAXIMIZE_NAME="Terminal"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {
-    # --no-sandbox and --disable-gpu are required inside containers
-    warp-terminal --no-sandbox --disable-gpu
+    xfce4-terminal --maximize
 }
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit

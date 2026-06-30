@@ -26,14 +26,15 @@ curl -fsSL "$ANTIGRAVITY_URL" -o /tmp/Antigravity.tar.gz
 mkdir -p /opt/antigravity
 tar -xzf /tmp/Antigravity.tar.gz -C /opt/antigravity
 
-# Locate the main executable (handles flat or top-level-dir tarballs)
-ANTIGRAVITY_BIN=$(find /opt/antigravity -maxdepth 2 -name 'Antigravity' -type f | head -1)
+# Locate the main executable — case-insensitive to handle 'antigravity' vs 'Antigravity'
+ANTIGRAVITY_BIN=$(find /opt/antigravity -maxdepth 2 -iname 'antigravity' -type f | head -1)
 if [ -z "$ANTIGRAVITY_BIN" ]; then
-    # Fallback: first executable in the extracted tree
-    ANTIGRAVITY_BIN=$(find /opt/antigravity -maxdepth 2 -type f -perm /u+x | head -1)
+    # Fallback: first executable in the extracted tree (exclude chrome-sandbox)
+    ANTIGRAVITY_BIN=$(find /opt/antigravity -maxdepth 2 -type f -perm /u+x ! -name 'chrome-sandbox' | head -1)
 fi
 chmod +x "$ANTIGRAVITY_BIN"
 ln -sf "$ANTIGRAVITY_BIN" /usr/local/bin/antigravity
+echo "Linked: $ANTIGRAVITY_BIN -> /usr/local/bin/antigravity"
 
 # ── Cleanup ────────────────────────────────────────────────────
 apt-get clean

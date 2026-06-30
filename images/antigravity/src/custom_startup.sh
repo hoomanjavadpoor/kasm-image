@@ -2,13 +2,14 @@
 # Kasm custom_startup.sh – Google Antigravity Hub
 set -ex
 
-PGREP="Antigravity"
+PGREP="antigravity"
 export MAXIMIZE="true"
 export MAXIMIZE_NAME="Antigravity"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {
-    antigravity --no-sandbox --disable-gpu-sandbox --disable-gpu
+    antigravity --no-sandbox --disable-gpu --disable-gpu-sandbox \
+        --disable-software-rasterizer --disable-dev-shm-usage
 }
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
