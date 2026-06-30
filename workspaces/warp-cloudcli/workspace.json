@@ -1,0 +1,17 @@
+{
+  "friendly_name": "Warp + Cloud CLIs",
+  "description": "Warp Terminal with Azure CLI, AWS CLI, Google Cloud CLI, GitHub CLI, and kubectl. A modern GPU-accelerated terminal for cloud operations.",
+  "image_src": "https://github.com/warpdotdev.png?size=200",
+  "architecture": ["amd64"],
+  "compatibility": [
+    {
+      "version": "1.19.x",
+      "image": "ghcr.io/hoomanjavadpoor/kasm-warp-cloudcli:rolling-daily",
+      "uncompressed_size_mb": 4200,
+      "available_tags": ["rolling-daily", "latest"]
+    }
+  ],
+  "categories": ["Development", "DevOps"],
+  "docker_registry": "https://ghcr.io",
+  "notes": "Warp Terminal uses GPU-accelerated rendering. If the workspace fails to start, set APP_ARGS=--disable-gpu in the workspace Docker Run Config Override."
+}

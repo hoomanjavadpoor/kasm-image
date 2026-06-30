@@ -1,0 +1,16 @@
+{
+  "friendly_name": "AnyDesk",
+  "description": "AnyDesk remote desktop client. Access and control other machines securely from within your Kasm session.",
+  "image_src": "https://cdn.simpleicons.org/anydesk/EF443B",
+  "architecture": ["amd64"],
+  "compatibility": [
+    {
+      "version": "1.19.x",
+      "image": "ghcr.io/hoomanjavadpoor/kasm-anydesk:rolling-daily",
+      "uncompressed_size_mb": 1800,
+      "available_tags": ["rolling-daily", "latest"]
+    }
+  ],
+  "categories": ["Remote Access"],
+  "docker_registry": "https://ghcr.io"
+}

@@ -4,85 +4,93 @@ on:
   push:
     branches: [main]
     paths:
-      - 'registry/**'
+      - 'workspaces/**'
       - '.github/workflows/deploy-registry.yml'
   workflow_dispatch:
 
-# Only one Pages deployment at a time
+# Allow only one Pages deployment at a time
 concurrency:
   group: pages
   cancel-in-progress: false
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 jobs:
   build-and-deploy:
     name: Build and deploy registry
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Build registry site
+      - name: Clone Kasm registry template (schema 1.1)
         run: |
-          mkdir -p _site/1.1
-          cp registry/1.1/workspaces.json _site/1.1/workspaces.json
+          git clone --depth=1 --branch=1.1 \
+            https://github.com/kasmtech/workspaces_registry_template.git \
+            /tmp/kasm-template
 
-          # Root index.html — required so GitHub Pages root URL doesn't 404
-          # Also serves as a human-readable landing page for the registry
-          cat > _site/index.html << 'HTML'
-          <!DOCTYPE html>
-          <html lang="en">
-          <head>
-            <meta charset="utf-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <title>Kasm Custom Image Registry</title>
-            <style>
-              body { font-family: system-ui, sans-serif; max-width: 640px; margin: 60px auto; padding: 0 20px; color: #e2e8f0; background: #0f172a; }
-              h1 { color: #f8fafc; }
-              code { background: #1e293b; padding: 12px 16px; border-radius: 8px; display: block; font-size: 1rem; color: #7dd3fc; margin: 16px 0; word-break: break-all; }
-              p { color: #94a3b8; line-height: 1.6; }
-              a { color: #38bdf8; }
-              ul { color: #94a3b8; line-height: 2; }
-            </style>
-          </head>
-          <body>
-            <h1>Kasm Custom Image Registry</h1>
-            <p>Add the URL below to <strong>Kasm Admin → Registries → Add Registry</strong>:</p>
-            <code>https://hoomanjavadpoor.github.io/kasm-image/</code>
-            <p>Available workspaces:</p>
-            <ul id="list"><li>Loading…</li></ul>
-            <p><a href="1.1/workspaces.json">workspaces.json</a> &nbsp;·&nbsp; <a href="https://github.com/hoomanjavadpoor/kasm-image">GitHub</a></p>
-            <script>
-              fetch('1.1/workspaces.json')
-                .then(r => r.json())
-                .then(data => {
-                  document.getElementById('list').innerHTML =
-                    data.map(w => '<li><strong>' + w.friendly_name + '</strong> — ' + w.description + '</li>').join('');
-                });
-            </script>
-          </body>
-          </html>
-          HTML
+      - name: Copy workspace data into template
+        run: |
+          cp -r workspaces/. /tmp/kasm-template/workspaces/
 
-          echo "Workspaces in registry:"
-          jq -r '.[] | "  - \(.friendly_name)  \(.compatibility[0].image)"' _site/1.1/workspaces.json
+      - name: Configure registry (next.config.js)
+        run: |
+          cat > /tmp/kasm-template/site/next.config.js << 'NEXTEOF'
+          /** @type {import('next').NextConfig} */
+          const nextConfig = {
+            output: 'export',
+            distDir: '../public',
+            env: {
+              name: 'Kasm Custom Images',
+              description: 'Custom Kasm Workspaces — Kubernetes IDEs, cloud CLIs, AI assistants, remote desktop, and more.',
+              icon: 'https://github.com/hoomanjavadpoor.png?size=200',
+              listUrl: 'https://hoomanjavadpoor.github.io/kasm-image/',
+              contactUrl: 'https://github.com/hoomanjavadpoor/kasm-image/issues',
+            },
+            reactStrictMode: true,
+            basePath: '/kasm-image/1.1',
+            trailingSlash: true,
+            images: {
+              unoptimized: true,
+            }
+          }
+          module.exports = nextConfig
+          NEXTEOF
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Patch template for external image URLs and correct default channel
+        run: |
+          # Workspace.js always prepends /icons/ — patch to pass through absolute URLs directly
+          sed -i \
+            's|src={`${router.basePath}/icons/${workspace.image_src}`}|src={workspace.image_src.startsWith("http") ? workspace.image_src : `${router.basePath}/icons/${workspace.image_src}`}|' \
+            /tmp/kasm-template/site/components/Workspace.js
+
+          # processjson.js hardcodes default_channel='develop'; change to our tag
+          sed -i \
+            "s/default_channel: 'develop'/default_channel: 'rolling-daily'/" \
+            /tmp/kasm-template/processing/processjson.js
+
+      - name: Process workspace JSON → list.json
+        run: |
+          cd /tmp/kasm-template
+          npm ci --prefix processing
+          node processing/processjson.js
+
+      - name: Build Next.js site
+        run: |
+          cd /tmp/kasm-template
+          npm ci --prefix site
+          npm run build --prefix site
+
+      - name: Copy build output into workspace
+        run: |
+          mkdir -p _site
+          cp -r /tmp/kasm-template/public/. _site/
+
+      - name: Deploy to gh-pages branch
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: _site
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+          branch: gh-pages
+          folder: _site
+          clean: true

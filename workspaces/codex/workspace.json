@@ -1,0 +1,16 @@
+{
+  "friendly_name": "OpenAI Codex CLI",
+  "description": "OpenAI Codex CLI coding assistant in a terminal workspace, with GitHub CLI pre-installed. Requires OPENAI_API_KEY at runtime.",
+  "image_src": "https://cdn.simpleicons.org/openai/10A37F",
+  "architecture": ["amd64"],
+  "compatibility": [
+    {
+      "version": "1.19.x",
+      "image": "ghcr.io/hoomanjavadpoor/kasm-codex:rolling-daily",
+      "uncompressed_size_mb": 2200,
+      "available_tags": ["rolling-daily", "latest"]
+    }
+  ],
+  "categories": ["Development", "AI"],
+  "docker_registry": "https://ghcr.io"
+}

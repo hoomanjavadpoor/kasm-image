@@ -1,14 +1,20 @@
 #!/usr/bin/env bash
-# Kasm custom_startup.sh – Claude Desktop
+# Kasm custom_startup.sh – Claude Code CLI (xterm)
 set -ex
 
-PGREP="claude"
+PGREP="xterm"
 export MAXIMIZE="true"
-export MAXIMIZE_NAME="Claude"
+export MAXIMIZE_NAME="xterm"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {
-    claude --no-sandbox --disable-gpu-sandbox
+    xterm \
+        -fa "Monospace" \
+        -fs 13 \
+        -bg "#0d1117" \
+        -fg "#58a6ff" \
+        -sl 10000 \
+        -T "Claude Code"
 }
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit

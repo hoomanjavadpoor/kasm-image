@@ -65,7 +65,7 @@
   },
   {
     "friendly_name": "Claude Code",
-    "description": "Anthropic Claude Desktop — the full GUI app. Sign in with your Anthropic account or Claude.ai subscription and start chatting right inside Kasm.",
+    "description": "Anthropic Claude Code CLI in an xterm terminal. Run 'claude' to start. Requires ANTHROPIC_API_KEY at runtime.",
     "image_src": "",
     "architecture": ["amd64"],
     "compatibility": [

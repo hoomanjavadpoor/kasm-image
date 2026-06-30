@@ -1,0 +1,16 @@
+{
+  "friendly_name": "FreeLens + Cloud CLIs",
+  "description": "FreeLens (open-source Kubernetes IDE) with kubectl, Helm, Azure CLI, AWS CLI, Google Cloud CLI, and GitHub CLI. Single-app workspace, always up to date via rolling-daily builds.",
+  "image_src": "https://raw.githubusercontent.com/freelensapp/freelens/main/packages/icon/icon.png",
+  "architecture": ["amd64"],
+  "compatibility": [
+    {
+      "version": "1.19.x",
+      "image": "ghcr.io/hoomanjavadpoor/kasm-freelens-cloudcli:rolling-daily",
+      "uncompressed_size_mb": 4000,
+      "available_tags": ["rolling-daily", "latest"]
+    }
+  ],
+  "categories": ["Development", "DevOps"],
+  "docker_registry": "https://ghcr.io"
+}

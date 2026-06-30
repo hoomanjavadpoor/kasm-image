@@ -1,0 +1,48 @@
+MIT License
+
+Copyright (c) 2026 Hooman Javadpoor
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+THIRD-PARTY SOFTWARE DISCLAIMER
+
+The Dockerfiles, scripts, and configuration files in this repository are
+licensed under the MIT License above. However, the container images built from
+this repository download and install third-party software at build time. Each
+third-party application is subject to its own license and terms of service:
+
+  - Lens Desktop        https://github.com/lensapp/lens/blob/master/LICENSE
+  - FreeLens            https://github.com/freelensapp/freelens/blob/main/LICENSE
+  - Warp Terminal       https://www.warp.dev/terms-of-service
+  - AnyDesk             https://anydesk.com/en/terms
+  - OpenAI Codex CLI    https://openai.com/policies/terms-of-use
+  - Claude Code CLI     https://www.anthropic.com/legal/consumer-terms
+  - Google Antigravity  subject to Google's applicable terms of service
+  - Helm                https://github.com/helm/helm/blob/main/LICENSE
+  - kubectl             https://github.com/kubernetes/kubectl/blob/master/LICENSE
+  - Azure CLI           https://aka.ms/azure-cli-license
+  - AWS CLI             https://github.com/aws/aws-cli/blob/develop/LICENSE.txt
+  - Google Cloud CLI    https://cloud.google.com/terms
+  - GitHub CLI          https://github.com/cli/cli/blob/trunk/LICENSE
+
+By pulling or running these images you agree to the terms of each included
+application. This project does not claim ownership of, affiliation with, or
+endorsement by any of the above vendors or their products.

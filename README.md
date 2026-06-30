@@ -1,5 +1,7 @@
 # kasm-image
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Seven ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, rebuilt daily and published to the GitHub Container Registry. Add them to any Kasm deployment in seconds via the built-in registry.
 
 ## Available workspaces
@@ -73,3 +75,33 @@ APP_ARGS=--disable-gpu
 ### GHCR visibility
 All images are published as **public** packages on GHCR. No authentication is needed to pull them.
 
+
+---
+
+## License
+
+The Dockerfiles, scripts, and configuration files in this repository are released under the [MIT License](LICENSE) — you are free to use, copy, modify, merge, publish, distribute, sublicense, or sell them.
+
+## Disclaimer
+
+This repository **automates the download and installation of third-party software** inside container images. It does not redistribute, repackage, or claim ownership of any of those applications. Each application is subject to its own license and terms of service:
+
+| Application | License / Terms |
+|-------------|----------------|
+| Lens Desktop | [MIT](https://github.com/lensapp/lens/blob/master/LICENSE) |
+| FreeLens | [MIT](https://github.com/freelensapp/freelens/blob/main/LICENSE) |
+| Warp Terminal | [Terms of Service](https://www.warp.dev/terms-of-service) |
+| AnyDesk | [Terms](https://anydesk.com/en/terms) |
+| OpenAI Codex CLI | [Terms of Use](https://openai.com/policies/terms-of-use) |
+| Claude Code CLI | [Consumer Terms](https://www.anthropic.com/legal/consumer-terms) |
+| Google Antigravity | Google applicable terms of service |
+| Helm | [Apache 2.0](https://github.com/helm/helm/blob/main/LICENSE) |
+| kubectl | [Apache 2.0](https://github.com/kubernetes/kubectl/blob/master/LICENSE) |
+| Azure CLI | [MIT](https://aka.ms/azure-cli-license) |
+| AWS CLI v2 | [Apache 2.0](https://github.com/aws/aws-cli/blob/develop/LICENSE.txt) |
+| Google Cloud CLI | [Terms](https://cloud.google.com/terms) |
+| GitHub CLI | [MIT](https://github.com/cli/cli/blob/trunk/LICENSE) |
+
+**By pulling or running these images you agree to the terms of each included application.**
+
+All product names, logos, and trademarks are the property of their respective owners. This project is not affiliated with, endorsed by, or sponsored by any of the vendors listed above.

@@ -16,7 +16,19 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/anydesk-archive-keyring.gpg]
     > /etc/apt/sources.list.d/anydesk-stable.list
 
 apt-get update
+
+# Stub systemctl so AnyDesk post-install doesn't fail in Docker
+# (the post-install script tries to 'systemctl start anydesk', which has no init system)
+cat > /usr/local/bin/systemctl << 'SH'
+#!/bin/bash
+exit 0
+SH
+chmod +x /usr/local/bin/systemctl
+
 apt-get install -y anydesk
+
+# Remove the stub
+rm -f /usr/local/bin/systemctl
 
 # Copy the desktop icon to the profile desktop
 DESKTOP_FILE=$(find /usr/share/applications -iname "anydesk*.desktop" 2>/dev/null | head -1 || true)

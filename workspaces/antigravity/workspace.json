@@ -1,0 +1,16 @@
+{
+  "friendly_name": "Antigravity",
+  "description": "Google Antigravity Hub desktop application. Cloud-native workspace management built by Google.",
+  "image_src": "https://brandlogos.net/wp-content/uploads/2025/12/google_antigravity-logo_brandlogos.net_qu4jc-512x472.png",
+  "architecture": ["amd64"],
+  "compatibility": [
+    {
+      "version": "1.19.x",
+      "image": "ghcr.io/hoomanjavadpoor/kasm-antigravity:rolling-daily",
+      "uncompressed_size_mb": 1900,
+      "available_tags": ["rolling-daily", "latest"]
+    }
+  ],
+  "categories": ["Development"],
+  "docker_registry": "https://ghcr.io"
+}
