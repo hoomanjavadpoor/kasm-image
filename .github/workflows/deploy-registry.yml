@@ -40,6 +40,8 @@ jobs:
 
       - name: Copy workspace data into template
         run: |
+          # Remove the default Chromium sample that ships with the template
+          rm -rf /tmp/kasm-template/workspaces/chromium
           cp -r workspaces/. /tmp/kasm-template/workspaces/
 
       - name: Configure registry (next.config.js)
@@ -107,6 +109,10 @@ jobs:
           mkdir -p _site/1.1
           cp -r /tmp/kasm-template/site-output/. _site/1.1/
           cp -r /tmp/kasm-template/public/. _site/1.1/
+
+          # Also serve list.json at the root so Kasm can find it regardless
+          # of whether it appends 'list.json' or '1.1/list.json' to the URL.
+          cp /tmp/kasm-template/public/list.json _site/list.json
 
           # Root index.html — redirect visitors to the versioned path
           cat > _site/index.html << 'HTML'
