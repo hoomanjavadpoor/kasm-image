@@ -29,8 +29,9 @@ Add the entire collection to Kasm in one step.
 1. In the Kasm admin UI go to **Admin → Registries → Add Registry**.
 2. Set the registry URL to:
    ```
-   https://hoomanjavadpoor.github.io/kasm-image/1.1/
+   https://hoomanjavadpoor.github.io/kasm-image/
    ```
+   > Kasm auto-discovers the schema version — add the base URL above (without `/1.1/`).
 3. Click **Save**. All seven workspaces will appear under **Workspaces → Add Workspace → From Registry**.
 
 

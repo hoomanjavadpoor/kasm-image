@@ -53,7 +53,7 @@ jobs:
               name: 'Kasm Custom Images',
               description: 'Custom Kasm Workspaces — Kubernetes IDEs, cloud CLIs, AI assistants, remote desktop, and more.',
               icon: 'https://github.com/hoomanjavadpoor.png?size=200',
-              listUrl: 'https://hoomanjavadpoor.github.io/kasm-image/1.1/',
+              listUrl: 'https://hoomanjavadpoor.github.io/kasm-image/',
               contactUrl: 'https://github.com/hoomanjavadpoor/kasm-image/issues',
             },
             reactStrictMode: true,
