@@ -33,7 +33,6 @@ Add the entire collection to Kasm in one step.
    ```
 3. Click **Save**. All seven workspaces will appear under **Workspaces → Add Workspace → From Registry**.
 
-> GitHub Pages must be enabled in the repo for this URL to work (it is by default on public repos).
 
 ---
 
