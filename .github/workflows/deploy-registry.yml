@@ -86,6 +86,16 @@ jobs:
             "s/default_channel: 'develop'/default_channel: 'rolling-daily'/" \
             /tmp/kasm-template/processing/processjson.js
 
+          # The glob "**\/workspace.json" searches the entire tree including
+          # node_modules. Restrict it to the workspaces/ subdirectory only.
+          sed -i \
+            's|glob("\*\*/workspace.json"|glob("workspaces/**/workspace.json"|' \
+            /tmp/kasm-template/processing/processjson.js
+
+          # Belt-and-suspenders: remove any stray Chromium workspace.json files
+          find /tmp/kasm-template/workspaces -name workspace.json \
+            -exec grep -l '"Chromium"' {} \; 2>/dev/null | xargs -r rm -f
+
       - name: Process workspace JSON files
         # Must run BEFORE the Next.js build: the pages import list.json via
         # webpack at compile time. distDir is now site-output/ (separate from
