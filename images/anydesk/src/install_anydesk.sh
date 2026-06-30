@@ -17,18 +17,17 @@ echo "deb [arch=amd64 signed-by=/usr/share/keyrings/anydesk-archive-keyring.gpg]
 
 apt-get update
 
-# Stub systemctl so AnyDesk post-install doesn't fail in Docker
-# (the post-install script tries to 'systemctl start anydesk', which has no init system)
-cat > /usr/local/bin/systemctl << 'SH'
-#!/bin/bash
-exit 0
-SH
-chmod +x /usr/local/bin/systemctl
-
-apt-get install -y anydesk
-
-# Remove the stub
-rm -f /usr/local/bin/systemctl
+# Download and unpack without running post-install scripts.
+# AnyDesk 8.x post-install calls system operations (systemctl, sysctl, dmesg)
+# that are not permitted inside an unprivileged Docker build container.
+cd /tmp
+apt-get download anydesk
+dpkg --unpack anydesk_*.deb
+# Delete the post-install script before dpkg --configure runs it
+rm -f /var/lib/dpkg/info/anydesk.postinst
+# Mark the package as configured (no postinst → succeeds cleanly)
+dpkg --configure anydesk
+cd /
 
 # Copy the desktop icon to the profile desktop
 DESKTOP_FILE=$(find /usr/share/applications -iname "anydesk*.desktop" 2>/dev/null | head -1 || true)
@@ -38,6 +37,7 @@ if [ -n "$DESKTOP_FILE" ]; then
 fi
 
 # ── Cleanup ────────────────────────────────────────────────────
+rm -f /tmp/anydesk_*.deb
 apt-get clean
 rm -rf /var/lib/apt/lists/* /var/tmp/* /tmp/*
 find /usr/share/ -name "icon-theme.cache" -exec rm -f {} \; 2>/dev/null || true
