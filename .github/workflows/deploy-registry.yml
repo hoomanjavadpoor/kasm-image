@@ -8,22 +8,29 @@ on:
       - '.github/workflows/deploy-registry.yml'
   workflow_dispatch:
 
-# Allow only one Pages deployment at a time
 concurrency:
   group: pages
   cancel-in-progress: false
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   build-and-deploy:
     name: Build and deploy registry
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
       - name: Clone Kasm registry template (schema 1.1)
         run: |
@@ -61,17 +68,18 @@ jobs:
 
       - name: Patch template for external image URLs and correct default channel
         run: |
-          # Workspace.js always prepends /icons/ — patch to pass through absolute URLs directly
+          # Workspace.js prepends /icons/ to all image_src values.
+          # Patch it to pass through absolute URLs (our CDN logos) unchanged.
           sed -i \
             's|src={`${router.basePath}/icons/${workspace.image_src}`}|src={workspace.image_src.startsWith("http") ? workspace.image_src : `${router.basePath}/icons/${workspace.image_src}`}|' \
             /tmp/kasm-template/site/components/Workspace.js
 
-          # processjson.js hardcodes default_channel='develop'; change to our tag
+          # processjson.js hardcodes default_channel='develop'; set to our tag.
           sed -i \
             "s/default_channel: 'develop'/default_channel: 'rolling-daily'/" \
             /tmp/kasm-template/processing/processjson.js
 
-      - name: Process workspace JSON → list.json
+      - name: Process workspace JSON files
         run: |
           cd /tmp/kasm-template
           npm ci --prefix processing
@@ -88,9 +96,11 @@ jobs:
           mkdir -p _site
           cp -r /tmp/kasm-template/public/. _site/
 
-      - name: Deploy to gh-pages branch
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          branch: gh-pages
-          folder: _site
-          clean: true
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
