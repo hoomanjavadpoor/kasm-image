@@ -1,0 +1,70 @@
+name: Build and Push Kasm Images
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # Every day at 02:00 UTC
+  workflow_dispatch:       # Allow manual trigger
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  build:
+    name: Build ${{ matrix.image }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          - lens-cloudcli
+          - freelens-cloudcli
+          - codex
+          - antigravity
+          - claude-code
+          - warp-cloudcli
+          - anydesk
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ github.repository_owner }}/kasm-${{ matrix.image }}
+          tags: |
+            type=raw,value=rolling-daily
+            type=raw,value=latest
+          labels: |
+            org.opencontainers.image.title=kasm-${{ matrix.image }}
+            org.opencontainers.image.description=Kasm single-app workspace – ${{ matrix.image }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: images/${{ matrix.image }}/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Always pull the base image so rolling-daily picks up Kasm updates
+          pull: true
+          # Layer cache scoped per image to speed up subsequent daily builds
+          cache-from: type=gha,scope=${{ matrix.image }}
+          cache-to: type=gha,scope=${{ matrix.image }},mode=max
+          platforms: linux/amd64
