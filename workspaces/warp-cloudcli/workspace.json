@@ -1,6 +1,6 @@
 {
-  "friendly_name": "Cloud CLIs Terminal",
-  "description": "xfce4-terminal pre-loaded with Azure CLI, AWS CLI, Google Cloud CLI, GitHub CLI, and kubectl. Lightweight GPU-free terminal for cloud operations.",
+  "friendly_name": "Warp + Cloud CLIs",
+  "description": "Warp Terminal with Azure CLI, AWS CLI, Google Cloud CLI, GitHub CLI, and kubectl. A modern terminal for cloud operations.",
   "image_src": "https://github.com/warpdotdev.png?size=200",
   "architecture": ["amd64"],
   "compatibility": [

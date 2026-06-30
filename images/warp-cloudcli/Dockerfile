@@ -31,7 +31,7 @@ COPY shared/scripts/install_browser.sh $INST_SCRIPTS/shared/install_browser.sh
 RUN bash "$INST_SCRIPTS/shared/install_browser.sh" \
     && rm -rf "$INST_SCRIPTS/shared/"
 
-## Cloud CLIs terminal (xfce4-terminal replaces discontinued Warp Linux)
+## Warp Terminal + cloud CLIs
 COPY images/warp-cloudcli/src/install_warp.sh $INST_SCRIPTS/warp/install_warp.sh
 RUN bash "$INST_SCRIPTS/warp/install_warp.sh" \
     && rm -rf "$INST_SCRIPTS/warp/"

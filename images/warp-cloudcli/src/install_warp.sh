@@ -1,31 +1,37 @@
 #!/usr/bin/env bash
-# Install xfce4-terminal + cloud CLIs (replaces Warp Terminal which no longer
-# distributes a Linux build as of mid-2026).
+# Install Warp Terminal
+# Download URL: GET https://app.warp.dev/download?package=deb serves the binary
+# directly (despite HEAD returning text/html — the GET works correctly).
 set -ex
 
 export DEBIAN_FRONTEND=noninteractive
 
+# ── Runtime dependencies (from .deb Depends field + software rendering) ──
 apt-get update
-apt-get install -y --no-install-recommends xfce4-terminal
+apt-get install -y --no-install-recommends \
+    curl ca-certificates \
+    fontconfig \
+    libegl1 \
+    libwayland-client0 \
+    libwayland-egl1 \
+    libx11-6 \
+    libxcb1 \
+    libxcursor1 \
+    libxi6 \
+    libxkbcommon-x11-0 \
+    libxkbcommon0 \
+    zlib1g \
+    libgl1-mesa-dri \
+    libglx-mesa0
 
-# ── Shell profile: welcome banner ─────────────────────────────
-cat >> /etc/bash.bashrc <<'BASHRC'
+# ── Download and install Warp ─────────────────────────────────
+curl -fsSL "https://app.warp.dev/download?package=deb" -o /tmp/warp.deb
+dpkg -i /tmp/warp.deb || apt-get install -f -y --no-install-recommends
 
-# ── Cloud CLIs Terminal workspace ─────────────────────────────
-if [ -t 1 ]; then
-  echo ""
-  printf '\033[1;32m  ╔══════════════════════════════════════════╗\n'
-  printf '\033[1;32m  ║      \033[1;37mCloud CLIs Terminal Workspace\033[1;32m    ║\n'
-  printf '\033[1;32m  ╠══════════════════════════════════════════╣\n'
-  printf '\033[1;32m  ║  \033[0;37maz\033[0m      Azure CLI                      \033[1;32m║\n'
-  printf '\033[1;32m  ║  \033[0;37maws\033[0m     AWS CLI                        \033[1;32m║\n'
-  printf '\033[1;32m  ║  \033[0;37mgcloud\033[0m  Google Cloud CLI                \033[1;32m║\n'
-  printf '\033[1;32m  ║  \033[0;37mgh\033[0m      GitHub CLI                     \033[1;32m║\n'
-  printf '\033[1;32m  ║  \033[0;37mkubectl\033[0m Kubernetes CLI                 \033[1;32m║\n'
-  printf '\033[1;32m  ╚══════════════════════════════════════════╝\n'
-  printf '\033[0m\n'
-fi
-BASHRC
+# Remove the defunct apt repo that postinst writes (avoids apt warnings)
+rm -f /etc/apt/sources.list.d/warpdotdev.list \
+      /etc/apt/sources.list.d/warpdotdev.sources \
+      /etc/apt/trusted.gpg.d/warpdotdev.gpg 2>/dev/null || true
 
 # ── Cleanup ────────────────────────────────────────────────────
 apt-get clean

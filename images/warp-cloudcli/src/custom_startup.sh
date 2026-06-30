@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-# Kasm custom_startup.sh – Cloud CLIs Terminal (xfce4-terminal)
+# Kasm custom_startup.sh – Warp Terminal + cloud CLIs
 set -ex
 
-PGREP="xfce4-terminal"
+PGREP="warp"
 export MAXIMIZE="true"
-export MAXIMIZE_NAME="Terminal"
+export MAXIMIZE_NAME="Warp"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {
-    xfce4-terminal --maximize
+    # LIBGL_ALWAYS_SOFTWARE forces Mesa llvmpipe (software renderer) so Warp's
+    # wgpu/EGL renderer works in VNC containers without a physical GPU.
+    LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe \
+        warp-terminal
 }
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
