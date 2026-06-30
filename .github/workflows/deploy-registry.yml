@@ -53,7 +53,7 @@ jobs:
               name: 'Kasm Custom Images',
               description: 'Custom Kasm Workspaces — Kubernetes IDEs, cloud CLIs, AI assistants, remote desktop, and more.',
               icon: 'https://github.com/hoomanjavadpoor.png?size=200',
-              listUrl: 'https://hoomanjavadpoor.github.io/kasm-image/',
+              listUrl: 'https://hoomanjavadpoor.github.io/kasm-image/1.1/',
               contactUrl: 'https://github.com/hoomanjavadpoor/kasm-image/issues',
             },
             reactStrictMode: true,
@@ -69,7 +69,7 @@ jobs:
       - name: Patch template for external image URLs and correct default channel
         run: |
           # Workspace.js prepends /icons/ to all image_src values.
-          # Patch it to pass through absolute URLs (our CDN logos) unchanged.
+          # Patch it to pass through absolute URLs (CDN logos) unchanged.
           sed -i \
             's|src={`${router.basePath}/icons/${workspace.image_src}`}|src={workspace.image_src.startsWith("http") ? workspace.image_src : `${router.basePath}/icons/${workspace.image_src}`}|' \
             /tmp/kasm-template/site/components/Workspace.js
@@ -91,10 +91,28 @@ jobs:
           npm ci --prefix site
           npm run build --prefix site
 
-      - name: Copy build output into workspace
+      - name: Assemble _site/ with correct path structure
         run: |
-          mkdir -p _site
-          cp -r /tmp/kasm-template/public/. _site/
+          # The app uses basePath=/kasm-image/1.1 so the output must live
+          # under a 1.1/ subdirectory so assets resolve correctly.
+          mkdir -p _site/1.1
+          cp -r /tmp/kasm-template/public/. _site/1.1/
+
+          # Root index.html — redirect visitors to the versioned path
+          cat > _site/index.html << 'HTML'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="refresh" content="0; url=./1.1/" />
+            <script>window.location.replace('./1.1/');</script>
+            <title>Kasm Custom Images Registry</title>
+          </head>
+          <body>
+            <a href="./1.1/">Redirecting to registry&hellip;</a>
+          </body>
+          </html>
+          HTML
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
