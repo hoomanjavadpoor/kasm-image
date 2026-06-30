@@ -13,5 +13,20 @@
   ],
   "categories": ["Development", "DevOps"],
   "docker_registry": "https://ghcr.io",
-  "notes": "Warp Terminal uses GPU-accelerated rendering. If the workspace fails to start, set APP_ARGS=--disable-gpu in the workspace Docker Run Config Override."
+  "notes": "Warp Terminal uses GPU-accelerated rendering. If the workspace fails to start, set APP_ARGS=--disable-gpu in the workspace Docker Run Config Override.",
+  "run_config": {
+    "hostname": "kasm"
+  },
+  "exec_config": {
+    "go": {
+      "cmd": "bash -c '/dockerstartup/custom_startup.sh --go --url \"$KASM_URL\"'"
+    },
+    "assign": {
+      "cmd": "bash -c '/dockerstartup/custom_startup.sh --assign --url \"$KASM_URL\"'"
+    }
+  },
+  "cores": 2,
+  "memory": 4096,
+  "gpu_count": 0,
+  "cpu_allocation_method": "Inherit"
 }
