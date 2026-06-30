@@ -1,7 +1,7 @@
 {
   "friendly_name": "AnyDesk",
   "description": "AnyDesk remote desktop client. Access and control other machines securely from within your Kasm session.",
-  "image_src": "https://cdn.simpleicons.org/anydesk/EF443B",
+  "image_src": "anydesk.svg",
   "architecture": ["amd64"],
   "compatibility": [
     {

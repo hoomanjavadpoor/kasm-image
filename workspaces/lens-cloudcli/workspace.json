@@ -1,7 +1,7 @@
 {
   "friendly_name": "Lens + Cloud CLIs",
   "description": "Lens Desktop Kubernetes IDE with kubectl, Helm, Azure CLI, AWS CLI, Google Cloud CLI, and GitHub CLI. NOTE: Lens is no longer free — a paid Lens subscription is required. See https://lenshq.io/legal/tos.",
-  "image_src": "https://cdn.simpleicons.org/lens",
+  "image_src": "lens-cloudcli.svg",
   "architecture": ["amd64"],
   "compatibility": [
     {

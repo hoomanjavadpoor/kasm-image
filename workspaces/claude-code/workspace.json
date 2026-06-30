@@ -1,7 +1,7 @@
 {
   "friendly_name": "Claude Code",
   "description": "Anthropic Claude Code CLI in an xterm terminal. Run 'claude' to start. Requires ANTHROPIC_API_KEY at runtime.",
-  "image_src": "https://cdn.simpleicons.org/anthropic",
+  "image_src": "claude-code.svg",
   "architecture": ["amd64"],
   "compatibility": [
     {
