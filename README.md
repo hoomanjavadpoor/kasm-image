@@ -87,7 +87,7 @@ This repository **automates the download and installation of third-party softwar
 
 | Application | License / Terms |
 |-------------|----------------|
-| Lens Desktop | [MIT](https://github.com/lensapp/lens/blob/master/LICENSE) |
+| Lens Desktop | [Terms of Service](https://lenshq.io/legal/tos) — **requires a paid subscription** |
 | FreeLens | [MIT](https://github.com/freelensapp/freelens/blob/main/LICENSE) |
 | Warp Terminal | [Terms of Service](https://www.warp.dev/terms-of-service) |
 | AnyDesk | [Terms](https://anydesk.com/en/terms) |

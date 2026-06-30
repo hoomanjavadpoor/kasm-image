@@ -29,7 +29,7 @@ licensed under the MIT License above. However, the container images built from
 this repository download and install third-party software at build time. Each
 third-party application is subject to its own license and terms of service:
 
-  - Lens Desktop        https://github.com/lensapp/lens/blob/master/LICENSE
+  - Lens Desktop        https://lenshq.io/legal/tos  *** Lens requires a paid subscription — verify your licence before use ***
   - FreeLens            https://github.com/freelensapp/freelens/blob/main/LICENSE
   - Warp Terminal       https://www.warp.dev/terms-of-service
   - AnyDesk             https://anydesk.com/en/terms
