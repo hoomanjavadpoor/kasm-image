@@ -84,17 +84,19 @@ jobs:
             "s/default_channel: 'develop'/default_channel: 'rolling-daily'/" \
             /tmp/kasm-template/processing/processjson.js
 
-      - name: Process workspace JSON files
-        run: |
-          cd /tmp/kasm-template
-          npm ci --prefix processing
-          node processing/processjson.js
-
       - name: Build Next.js site
         run: |
           cd /tmp/kasm-template
           npm ci --prefix site
           npm run build --prefix site
+
+      - name: Process workspace JSON files
+        # Run AFTER the Next.js build because 'next build' cleans distDir first,
+        # which would delete the list.json and icons generated here.
+        run: |
+          cd /tmp/kasm-template
+          npm ci --prefix processing
+          node processing/processjson.js
 
       - name: Assemble _site/ with correct path structure
         run: |
