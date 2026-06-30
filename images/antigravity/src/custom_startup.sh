@@ -8,7 +8,7 @@ export MAXIMIZE_NAME="Antigravity"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {
-    antigravity --no-sandbox --disable-gpu-sandbox
+    antigravity --no-sandbox --disable-gpu-sandbox --disable-gpu
 }
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit

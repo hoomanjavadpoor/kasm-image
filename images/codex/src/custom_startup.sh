@@ -4,7 +4,7 @@ set -ex
 
 PGREP="xterm"
 export MAXIMIZE="true"
-export MAXIMIZE_NAME="xterm"
+export MAXIMIZE_NAME="Codex CLI"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {

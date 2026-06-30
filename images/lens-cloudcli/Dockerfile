@@ -8,10 +8,13 @@ WORKDIR $HOME
 
 ######### Customize Container Here ###########
 
-## Configure single-application XFCE desktop and remove the panel
+## Configure single-application XFCE desktop, remove panel, set black wallpaper
+COPY shared/scripts/set_bg_black.sh $INST_SCRIPTS/shared/set_bg_black.sh
 RUN cp "$HOME/.config/xfce4/xfconf/single-application-xfce-perchannel-xml/"* \
        "$HOME/.config/xfce4/xfconf/xfce-perchannel-xml/" \
-    && apt-get remove -y xfce4-panel
+    && apt-get remove -y xfce4-panel \
+    && bash "$INST_SCRIPTS/shared/set_bg_black.sh" \
+    && rm -f "$INST_SCRIPTS/shared/set_bg_black.sh"
 
 ## Base tools (Go + Python 3)
 COPY shared/scripts/install_base_tools.sh $INST_SCRIPTS/shared/install_base_tools.sh

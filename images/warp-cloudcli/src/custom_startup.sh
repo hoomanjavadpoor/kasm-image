@@ -8,8 +8,8 @@ export MAXIMIZE_NAME="Warp"
 MAXIMIZE_SCRIPT=$STARTUPDIR/maximize_window.sh
 
 launch_app() {
-    # --no-sandbox is required when running Electron apps inside containers
-    warp-terminal --no-sandbox
+    # --no-sandbox and --disable-gpu are required inside containers
+    warp-terminal --no-sandbox --disable-gpu
 }
 
 options=$(getopt -o gau: -l go,assign,url: -n "$0" -- "$@") || exit
