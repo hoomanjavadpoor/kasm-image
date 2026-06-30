@@ -48,7 +48,7 @@ jobs:
           /** @type {import('next').NextConfig} */
           const nextConfig = {
             output: 'export',
-            distDir: '../public',
+            distDir: '../site-output',
             env: {
               name: 'Kasm Custom Images',
               description: 'Custom Kasm Workspaces — Kubernetes IDEs, cloud CLIs, AI assistants, remote desktop, and more.',
@@ -84,25 +84,28 @@ jobs:
             "s/default_channel: 'develop'/default_channel: 'rolling-daily'/" \
             /tmp/kasm-template/processing/processjson.js
 
+      - name: Process workspace JSON files
+        # Must run BEFORE the Next.js build: the pages import list.json via
+        # webpack at compile time. distDir is now site-output/ (separate from
+        # public/) so the build no longer overwrites list.json.
+        run: |
+          cd /tmp/kasm-template
+          npm ci --prefix processing
+          node processing/processjson.js
+
       - name: Build Next.js site
         run: |
           cd /tmp/kasm-template
           npm ci --prefix site
           npm run build --prefix site
 
-      - name: Process workspace JSON files
-        # Run AFTER the Next.js build because 'next build' cleans distDir first,
-        # which would delete the list.json and icons generated here.
-        run: |
-          cd /tmp/kasm-template
-          npm ci --prefix processing
-          node processing/processjson.js
-
       - name: Assemble _site/ with correct path structure
         run: |
-          # The app uses basePath=/kasm-image/1.1 so the output must live
-          # under a 1.1/ subdirectory so assets resolve correctly.
+          # distDir=site-output (Next.js pages + assets)
+          # public/         (list.json + icons from processjson.js)
+          # Merge both under _site/1.1/ so basePath=/kasm-image/1.1 resolves.
           mkdir -p _site/1.1
+          cp -r /tmp/kasm-template/site-output/. _site/1.1/
           cp -r /tmp/kasm-template/public/. _site/1.1/
 
           # Root index.html — redirect visitors to the versioned path
