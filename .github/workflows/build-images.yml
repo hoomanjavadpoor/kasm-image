@@ -68,3 +68,15 @@ jobs:
           cache-from: type=gha,scope=${{ matrix.image }}
           cache-to: type=gha,scope=${{ matrix.image }},mode=max
           platforms: linux/amd64
+
+      - name: Make GHCR package public
+        # GHCR packages default to private on first push; make them public so
+        # Kasm can pull without authentication.
+        run: |
+          gh api \
+            --method PATCH \
+            -H "Accept: application/vnd.github+json" \
+            "/user/packages/container/kasm-${{ matrix.image }}" \
+            -f visibility='public' || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
