@@ -28,9 +28,6 @@ while [[ $1 != -- ]]; do
 done
 shift
 
-for arg; do echo "arg! $arg"; done
-FORCE=$2
-
 kasm_exec() {
     /usr/bin/filter_ready
     /usr/bin/desktop_ready
@@ -39,7 +36,7 @@ kasm_exec() {
 }
 
 kasm_startup() {
-    if [ -z "$DISABLE_CUSTOM_STARTUP" ] || [ -n "$FORCE" ]; then
+    if [ -z "$DISABLE_CUSTOM_STARTUP" ]; then
         echo "Entering process startup loop"
         set +x
         while true; do
