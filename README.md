@@ -13,7 +13,7 @@ Eight ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, re
 | **OpenAI Codex CLI** | Codex CLI in xterm · GitHub CLI |
 | **Bruno** | Bruno open-source API client for exploring and testing APIs |
 | **Google Antigravity** | Google Antigravity Hub desktop app |
-| **Claude Desktop** | Anthropic Claude Desktop GUI app |
+| **Claude Code** | Anthropic Claude Code CLI in an xterm terminal — run `claude` to start |
 | **Warp + Cloud CLIs** | Warp Terminal · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI · kubectl |
 | **AnyDesk** | AnyDesk remote desktop client |
 
@@ -51,7 +51,7 @@ Add the entire collection to Kasm in one step.
    | OpenAI Codex CLI | `ghcr.io/hoomanjavadpoor/kasm-codex:rolling-daily` |
    | Bruno | `ghcr.io/hoomanjavadpoor/kasm-bruno:rolling-daily` |
    | Google Antigravity | `ghcr.io/hoomanjavadpoor/kasm-antigravity:rolling-daily` |
-   | Claude Desktop | `ghcr.io/hoomanjavadpoor/kasm-claude-code:rolling-daily` |
+   | Claude Code | `ghcr.io/hoomanjavadpoor/kasm-claude-code:rolling-daily` |
    | Warp + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-warp-cloudcli:rolling-daily` |
    | AnyDesk | `ghcr.io/hoomanjavadpoor/kasm-anydesk:rolling-daily` |
 
