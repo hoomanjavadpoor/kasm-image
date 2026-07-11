@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Seven ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, rebuilt daily and published to the GitHub Container Registry. Add them to any Kasm deployment in seconds via the built-in registry.
+Eight ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, rebuilt daily and published to the GitHub Container Registry. Add them to any Kasm deployment in seconds via the built-in registry.
 
 ## Available workspaces
 
@@ -11,6 +11,7 @@ Seven ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, re
 | **Lens + Cloud CLIs** | Lens Desktop Kubernetes IDE · kubectl · Helm · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI |
 | **FreeLens + Cloud CLIs** | FreeLens (open-source K8s IDE) · kubectl · Helm · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI |
 | **OpenAI Codex CLI** | Codex CLI in xterm · GitHub CLI |
+| **Bruno** | Bruno open-source API client for exploring and testing APIs |
 | **Google Antigravity** | Google Antigravity Hub desktop app |
 | **Claude Desktop** | Anthropic Claude Desktop GUI app |
 | **Warp + Cloud CLIs** | Warp Terminal · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI · kubectl |
@@ -32,7 +33,7 @@ Add the entire collection to Kasm in one step.
    https://hoomanjavadpoor.github.io/kasm-image/
    ```
    > Kasm auto-discovers the schema version — add the base URL above (without `/1.1/`).
-3. Click **Save**. All seven workspaces will appear under **Workspaces → Add Workspace → From Registry**.
+3. Click **Save**. All eight workspaces will appear under **Workspaces → Add Workspace → From Registry**.
 
 
 ---
@@ -48,6 +49,7 @@ Add the entire collection to Kasm in one step.
    | Lens + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-lens-cloudcli:rolling-daily` |
    | FreeLens + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-freelens-cloudcli:rolling-daily` |
    | OpenAI Codex CLI | `ghcr.io/hoomanjavadpoor/kasm-codex:rolling-daily` |
+   | Bruno | `ghcr.io/hoomanjavadpoor/kasm-bruno:rolling-daily` |
    | Google Antigravity | `ghcr.io/hoomanjavadpoor/kasm-antigravity:rolling-daily` |
    | Claude Desktop | `ghcr.io/hoomanjavadpoor/kasm-claude-code:rolling-daily` |
    | Warp + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-warp-cloudcli:rolling-daily` |
@@ -92,6 +94,7 @@ This repository **automates the download and installation of third-party softwar
 | FreeLens | [MIT](https://github.com/freelensapp/freelens/blob/main/LICENSE) |
 | Warp Terminal | [Terms of Service](https://www.warp.dev/terms-of-service) |
 | AnyDesk | [Terms](https://anydesk.com/en/terms) |
+| Bruno | [MIT](https://github.com/usebruno/bruno/blob/main/license.md) |
 | OpenAI Codex CLI | [Terms of Use](https://openai.com/policies/terms-of-use) |
 | Claude Code CLI | [Consumer Terms](https://www.anthropic.com/legal/consumer-terms) |
 | Google Antigravity | Google applicable terms of service |

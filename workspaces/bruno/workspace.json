@@ -1,0 +1,31 @@
+{
+  "friendly_name": "Bruno",
+  "description": "Bruno open-source API client for exploring and testing APIs.",
+  "image_src": "https://www.usebruno.com/bruno-logo.png",
+  "architecture": ["amd64"],
+  "compatibility": [
+    {
+      "version": "1.19.x",
+      "image": "ghcr.io/hoomanjavadpoor/kasm-bruno:rolling-daily",
+      "uncompressed_size_mb": 2400,
+      "available_tags": ["rolling-daily", "latest"]
+    }
+  ],
+  "categories": ["Development", "API"],
+  "docker_registry": "https://ghcr.io",
+  "run_config": {
+    "hostname": "kasm"
+  },
+  "exec_config": {
+    "go": {
+      "cmd": "bash -c '/dockerstartup/custom_startup.sh --go --url \"$KASM_URL\"'"
+    },
+    "assign": {
+      "cmd": "bash -c '/dockerstartup/custom_startup.sh --assign --url \"$KASM_URL\"'"
+    }
+  },
+  "cores": 2,
+  "memory": 4096,
+  "gpu_count": 0,
+  "cpu_allocation_method": "Inherit"
+}
