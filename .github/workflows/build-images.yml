@@ -23,6 +23,7 @@ jobs:
           - lens-cloudcli
           - freelens-cloudcli
           - codex
+          - bruno
           - antigravity
           - claude-code
           - warp-cloudcli
