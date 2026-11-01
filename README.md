@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Eight ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, rebuilt daily and published to the GitHub Container Registry. Add them to any Kasm deployment in seconds via the built-in registry.
+Nine ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, rebuilt daily and published to the GitHub Container Registry. Add them to any Kasm deployment in seconds via the built-in registry.
 
 ## Available workspaces
 
@@ -16,6 +16,7 @@ Eight ready-to-use [Kasm Workspaces](https://kasmweb.com/) single-app images, re
 | **Claude Code** | Anthropic Claude Code CLI in an xterm terminal — run `claude` to start |
 | **Warp + Cloud CLIs** | Warp Terminal · Azure CLI · AWS CLI · Google Cloud CLI · GitHub CLI · kubectl |
 | **AnyDesk** | AnyDesk remote desktop client |
+| **Tor Browser** | Official Tor Browser with the Safest security level enabled |
 
 > Every image ships with **Go** (latest stable) and **Python 3** with pip/venv.
 
@@ -33,7 +34,7 @@ Add the entire collection to Kasm in one step.
    https://hoomanjavadpoor.github.io/kasm-image/
    ```
    > Kasm auto-discovers the schema version — add the base URL above (without `/1.1/`).
-3. Click **Save**. All eight workspaces will appear under **Workspaces → Add Workspace → From Registry**.
+3. Click **Save**. All nine workspaces will appear under **Workspaces → Add Workspace → From Registry**.
 
 
 ---
@@ -54,6 +55,7 @@ Add the entire collection to Kasm in one step.
    | Claude Code | `ghcr.io/hoomanjavadpoor/kasm-claude-code:rolling-daily` |
    | Warp + Cloud CLIs | `ghcr.io/hoomanjavadpoor/kasm-warp-cloudcli:rolling-daily` |
    | AnyDesk | `ghcr.io/hoomanjavadpoor/kasm-anydesk:rolling-daily` |
+   | Tor Browser | `ghcr.io/hoomanjavadpoor/kasm-tor-browser:rolling-daily` |
 
 4. Leave all other settings at their defaults and click **Save**.
 
@@ -73,6 +75,9 @@ Warp uses GPU-accelerated rendering. If the session fails to start or shows a bl
 ```
 APP_ARGS=--disable-gpu
 ```
+
+### Tor Browser — privacy limitations
+The Tor Browser image downloads the latest stable Linux release during each daily build and verifies its official signing-key fingerprint and archive signature. It keeps Tor Browser's built-in protections, enables the Safest security level, and does not install extensions or maximize the browser window. Browser traffic is routed through Tor, but this cannot guarantee anonymity: your Kasm host/network can still identify your connection to the workspace, and logging into personal accounts or sharing identifying information can reveal who you are. See the [Tor Project's safety guidance](https://support.torproject.org/faq/staying-anonymous/).
 
 ### GHCR visibility
 All images are published as **public** packages on GHCR. No authentication is needed to pull them.
@@ -94,6 +99,7 @@ This repository **automates the download and installation of third-party softwar
 | FreeLens | [MIT](https://github.com/freelensapp/freelens/blob/main/LICENSE) |
 | Warp Terminal | [Terms of Service](https://www.warp.dev/terms-of-service) |
 | AnyDesk | [Terms](https://anydesk.com/en/terms) |
+| Tor Browser | [MPL 2.0](https://gitlab.torproject.org/tpo/applications/tor-browser/-/blob/main/LICENSE) |
 | Bruno | [MIT](https://github.com/usebruno/bruno/blob/main/license.md) |
 | OpenAI Codex CLI | [Terms of Use](https://openai.com/policies/terms-of-use) |
 | Claude Code CLI | [Consumer Terms](https://www.anthropic.com/legal/consumer-terms) |
