@@ -33,6 +33,7 @@ jobs:
           - claude-code
           - warp-cloudcli
           - anydesk
+          - tor-browser
 
     steps:
       - name: Checkout repository

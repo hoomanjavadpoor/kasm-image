@@ -127,5 +127,21 @@
     ],
     "categories": ["Remote Access"],
     "docker_registry": "https://ghcr.io"
+  },
+  {
+    "friendly_name": "Tor Browser",
+    "description": "Official Tor Browser with its built-in privacy protections and the Safest security level enabled. Browser traffic is routed through Tor. No browser can guarantee anonymity; avoid identifying accounts and follow Tor Project safety guidance.",
+    "image_src": "https://cdn.simpleicons.org/torbrowser",
+    "architecture": ["amd64"],
+    "compatibility": [
+      {
+        "version": "1.19.x",
+        "image": "ghcr.io/hoomanjavadpoor/kasm-tor-browser:rolling-daily",
+        "uncompressed_size_mb": 2400,
+        "available_tags": ["rolling-daily", "latest"]
+      }
+    ],
+    "categories": ["Privacy"],
+    "docker_registry": "https://ghcr.io"
   }
 ]
