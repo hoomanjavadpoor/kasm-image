@@ -8,8 +8,6 @@ apt-get install -y --no-install-recommends ca-certificates curl gnupg dirmngr py
 
 readonly METADATA_URL="https://aus1.torproject.org/torbrowser/update_3/release/downloads.json"
 readonly KEY_FINGERPRINT="A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
-# keys.openpgp.org strips user IDs, which makes gpg skip the key; the fingerprint is pinned below anyway.
-readonly KEY_URL="https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x${KEY_FINGERPRINT}"
 
 metadata=$(curl -fsSL "$METADATA_URL")
 read -r version archive_url sig_url < <(python3 -c '
@@ -28,12 +26,8 @@ trap 'rm -rf "$work_dir"' EXIT
 export GNUPGHOME="$work_dir/gnupg"
 mkdir -m 0700 "$GNUPGHOME"
 
-if curl -fsSL "$KEY_URL" -o "$work_dir/tor-browser-signing-key.asc"; then
-    gpg --batch --import "$work_dir/tor-browser-signing-key.asc"
-else
-    echo "Key download failed; trying keyserver via gpg" >&2
-    gpg --batch --keyserver hkps://keyserver.ubuntu.com --recv-keys "$KEY_FINGERPRINT"
-fi
+# Tor Project's documented method: fetch the key via Web Key Directory on torproject.org
+gpg --batch --auto-key-locate clear,nodefault,wkd --locate-keys torbrowser@torproject.org
 if ! gpg --batch --with-colons --fingerprint "$KEY_FINGERPRINT" | grep -q "^fpr:::::::::${KEY_FINGERPRINT}:"; then
     echo "Tor Browser signing key $KEY_FINGERPRINT was not imported" >&2
     exit 1
