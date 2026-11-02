@@ -4,42 +4,42 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl gnupg python3 xz-utils
+apt-get install -y --no-install-recommends ca-certificates curl gnupg dirmngr python3 xz-utils
 
-readonly BASE_URL="https://dist.torproject.org/torbrowser"
-readonly KEY_URL="https://keys.openpgp.org/vks/v1/by-fingerprint/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
-readonly KEY_FINGERPRINT="A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
+readonly METADATA_URL="https://aus1.torproject.org/torbrowser/update_3/release/downloads.json"
+readonly KEY_FINGERPRINT="EF6E286DDA85EA2A4BA7DE684E2C6E8793298290"
 
-release_index=$(curl -fsSL "$BASE_URL/")
-version=$(python3 -c '
-import re
+metadata=$(curl -fsSL "$METADATA_URL")
+read -r version archive_url sig_url < <(python3 -c '
+import json
 import sys
 
-versions = re.findall(r"""href=["\x27](\d+\.\d+(?:\.\d+)?)/["\x27]""", sys.stdin.read())
-if not versions:
-    raise SystemExit("No stable Tor Browser releases found in the official release index")
-print(max(versions, key=lambda version: tuple(map(int, version.split(".")))))
-' <<< "$release_index")
+data = json.load(sys.stdin)
+entry = data["downloads"]["linux-x86_64"]["ALL"]
+print(data["version"], entry["binary"], entry["sig"])
+' <<< "$metadata")
+echo "Installing Tor Browser $version from $archive_url"
 
-archive="tor-browser-linux-x86_64-${version}.tar.xz"
-release_url="${BASE_URL}/${version}"
+archive=$(basename "$archive_url")
 work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT
 export GNUPGHOME="$work_dir/gnupg"
 mkdir -m 0700 "$GNUPGHOME"
 
-curl -fsSL "$KEY_URL" -o "$work_dir/tor-browser-signing-key.asc"
-gpg --batch --import "$work_dir/tor-browser-signing-key.asc"
-imported_fingerprint=$(gpg --batch --with-colons --fingerprint \
-    | awk -F: '$1 == "fpr" { print $10; exit }')
-if [[ "$imported_fingerprint" != "$KEY_FINGERPRINT" ]]; then
-    echo "Unexpected Tor Browser signing key fingerprint: $imported_fingerprint" >&2
+# Tor Project's documented method: fetch the key via Web Key Directory on torproject.org
+gpg --batch --auto-key-locate clear,nodefault,wkd --locate-keys torbrowser@torproject.org
+if ! gpg --batch --with-colons --fingerprint "$KEY_FINGERPRINT" | grep -q "^fpr:::::::::${KEY_FINGERPRINT}:"; then
+    echo "Tor Browser signing key $KEY_FINGERPRINT was not imported" >&2
     exit 1
 fi
 
-curl -fsSL "$release_url/$archive" -o "$work_dir/$archive"
-curl -fsSL "$release_url/$archive.asc" -o "$work_dir/$archive.asc"
-gpg --batch --verify "$work_dir/$archive.asc" "$work_dir/$archive"
+curl -fsSL "$archive_url" -o "$work_dir/$archive"
+curl -fsSL "$sig_url" -o "$work_dir/$archive.asc"
+gpg --batch --status-fd 1 --verify "$work_dir/$archive.asc" "$work_dir/$archive" > "$work_dir/verify.status"
+if ! awk -v fp="$KEY_FINGERPRINT" '$2 == "VALIDSIG" && $NF == fp { ok = 1 } END { exit !ok }' "$work_dir/verify.status"; then
+    echo "Archive signature was not made by the pinned Tor Browser signing key" >&2
+    exit 1
+fi
 
 mkdir -p /opt
 tar -xJf "$work_dir/$archive" -C /opt
