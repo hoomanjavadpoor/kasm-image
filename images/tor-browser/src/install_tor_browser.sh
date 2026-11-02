@@ -7,7 +7,7 @@ apt-get update
 apt-get install -y --no-install-recommends ca-certificates curl gnupg dirmngr python3 xz-utils
 
 readonly METADATA_URL="https://aus1.torproject.org/torbrowser/update_3/release/downloads.json"
-readonly KEY_FINGERPRINT="A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
+readonly KEY_FINGERPRINT="EF6E286DDA85EA2A4BA7DE684E2C6E8793298290"
 
 metadata=$(curl -fsSL "$METADATA_URL")
 read -r version archive_url sig_url < <(python3 -c '
