@@ -7,8 +7,9 @@ apt-get update
 apt-get install -y --no-install-recommends ca-certificates curl gnupg python3 xz-utils
 
 readonly BASE_URL="https://dist.torproject.org/torbrowser"
-readonly KEY_URL="https://keys.openpgp.org/vks/v1/by-fingerprint/A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
 readonly KEY_FINGERPRINT="A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
+# keys.openpgp.org strips user IDs, which makes gpg skip the key; the fingerprint is pinned below anyway.
+readonly KEY_URL="https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x${KEY_FINGERPRINT}"
 
 release_index=$(curl -fsSL "$BASE_URL/")
 version=$(python3 -c '
@@ -30,16 +31,18 @@ mkdir -m 0700 "$GNUPGHOME"
 
 curl -fsSL "$KEY_URL" -o "$work_dir/tor-browser-signing-key.asc"
 gpg --batch --import "$work_dir/tor-browser-signing-key.asc"
-imported_fingerprint=$(gpg --batch --with-colons --fingerprint \
-    | awk -F: '$1 == "fpr" { print $10; exit }')
-if [[ "$imported_fingerprint" != "$KEY_FINGERPRINT" ]]; then
-    echo "Unexpected Tor Browser signing key fingerprint: $imported_fingerprint" >&2
+if ! gpg --batch --with-colons --fingerprint "$KEY_FINGERPRINT" | grep -q "^fpr:::::::::${KEY_FINGERPRINT}:"; then
+    echo "Tor Browser signing key $KEY_FINGERPRINT was not imported" >&2
     exit 1
 fi
 
 curl -fsSL "$release_url/$archive" -o "$work_dir/$archive"
 curl -fsSL "$release_url/$archive.asc" -o "$work_dir/$archive.asc"
-gpg --batch --verify "$work_dir/$archive.asc" "$work_dir/$archive"
+gpg --batch --status-fd 1 --verify "$work_dir/$archive.asc" "$work_dir/$archive" > "$work_dir/verify.status"
+if ! awk -v fp="$KEY_FINGERPRINT" '$2 == "VALIDSIG" && $NF == fp { ok = 1 } END { exit !ok }' "$work_dir/verify.status"; then
+    echo "Archive signature was not made by the pinned Tor Browser signing key" >&2
+    exit 1
+fi
 
 mkdir -p /opt
 tar -xJf "$work_dir/$archive" -C /opt
