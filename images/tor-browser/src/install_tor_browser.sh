@@ -4,40 +4,43 @@ set -euo pipefail
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
-apt-get install -y --no-install-recommends ca-certificates curl gnupg python3 xz-utils
+apt-get install -y --no-install-recommends ca-certificates curl gnupg dirmngr python3 xz-utils
 
-readonly BASE_URL="https://dist.torproject.org/torbrowser"
+readonly METADATA_URL="https://aus1.torproject.org/torbrowser/update_3/release/downloads.json"
 readonly KEY_FINGERPRINT="A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89"
 # keys.openpgp.org strips user IDs, which makes gpg skip the key; the fingerprint is pinned below anyway.
 readonly KEY_URL="https://keyserver.ubuntu.com/pks/lookup?op=get&options=mr&search=0x${KEY_FINGERPRINT}"
 
-release_index=$(curl -fsSL "$BASE_URL/")
-version=$(python3 -c '
-import re
+metadata=$(curl -fsSL "$METADATA_URL")
+read -r version archive_url sig_url < <(python3 -c '
+import json
 import sys
 
-versions = re.findall(r"""href=["\x27](\d+\.\d+(?:\.\d+)?)/["\x27]""", sys.stdin.read())
-if not versions:
-    raise SystemExit("No stable Tor Browser releases found in the official release index")
-print(max(versions, key=lambda version: tuple(map(int, version.split(".")))))
-' <<< "$release_index")
+data = json.load(sys.stdin)
+entry = data["downloads"]["linux-x86_64"]["ALL"]
+print(data["version"], entry["binary"], entry["sig"])
+' <<< "$metadata")
+echo "Installing Tor Browser $version from $archive_url"
 
-archive="tor-browser-linux-x86_64-${version}.tar.xz"
-release_url="${BASE_URL}/${version}"
+archive=$(basename "$archive_url")
 work_dir=$(mktemp -d)
 trap 'rm -rf "$work_dir"' EXIT
 export GNUPGHOME="$work_dir/gnupg"
 mkdir -m 0700 "$GNUPGHOME"
 
-curl -fsSL "$KEY_URL" -o "$work_dir/tor-browser-signing-key.asc"
-gpg --batch --import "$work_dir/tor-browser-signing-key.asc"
+if curl -fsSL "$KEY_URL" -o "$work_dir/tor-browser-signing-key.asc"; then
+    gpg --batch --import "$work_dir/tor-browser-signing-key.asc"
+else
+    echo "Key download failed; trying keyserver via gpg" >&2
+    gpg --batch --keyserver hkps://keyserver.ubuntu.com --recv-keys "$KEY_FINGERPRINT"
+fi
 if ! gpg --batch --with-colons --fingerprint "$KEY_FINGERPRINT" | grep -q "^fpr:::::::::${KEY_FINGERPRINT}:"; then
     echo "Tor Browser signing key $KEY_FINGERPRINT was not imported" >&2
     exit 1
 fi
 
-curl -fsSL "$release_url/$archive" -o "$work_dir/$archive"
-curl -fsSL "$release_url/$archive.asc" -o "$work_dir/$archive.asc"
+curl -fsSL "$archive_url" -o "$work_dir/$archive"
+curl -fsSL "$sig_url" -o "$work_dir/$archive.asc"
 gpg --batch --status-fd 1 --verify "$work_dir/$archive.asc" "$work_dir/$archive" > "$work_dir/verify.status"
 if ! awk -v fp="$KEY_FINGERPRINT" '$2 == "VALIDSIG" && $NF == fp { ok = 1 } END { exit !ok }' "$work_dir/verify.status"; then
     echo "Archive signature was not made by the pinned Tor Browser signing key" >&2
