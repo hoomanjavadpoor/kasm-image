@@ -1,7 +1,7 @@
 {
   "friendly_name": "Tor Browser",
   "description": "Official Tor Browser with its built-in privacy protections and the Safest security level enabled. Browser traffic is routed through Tor. No browser can guarantee anonymity; avoid identifying accounts and follow Tor Project safety guidance.",
-  "image_src": "https://cdn.simpleicons.org/torbrowser",
+  "image_src": "tor-browser.svg",
   "architecture": ["amd64"],
   "compatibility": [
     {
